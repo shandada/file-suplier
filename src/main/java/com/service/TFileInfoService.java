@@ -143,10 +143,11 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
         String hehe = new String(fileName.getBytes("utf-8"), "iso-8859-1");
         // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
         response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
-//        FileUtil.download(fileName, response, fileKey);
-        FileUtil2.download2(fileName, response, fileKey);
+        FileUtil.download(fileName, response, fileKey);
+//        FileUtil2.download2(fileName,response);
 
     }
+
 
 
     //条件查询

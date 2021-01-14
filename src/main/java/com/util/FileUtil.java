@@ -8,7 +8,7 @@ import io.swagger.models.auth.In;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
-// 文件下载工具类
+// 文件下载工具类  加ceph
 public class FileUtil {
     public static void  download(String fileName, HttpServletResponse response, String fileKey) throws IOException {
         // 发送给客户端的数据

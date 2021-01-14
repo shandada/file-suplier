@@ -34,7 +34,7 @@ public class CephUtils implements MyCeph {
      * @param mon_host monitor节点ip
      * @param key 秘钥
      */
-    public CephUtils(String clusterName,String mon_host, String key) {
+    public  CephUtils(String clusterName,String mon_host, String key) {
         try {
             rados = new Rados(clusterName);
             rados.confSet("mon_host", mon_host);

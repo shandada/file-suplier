@@ -4,11 +4,17 @@ import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
 import com.service.SupplierFileService;
 import com.service.TFileInfoService;
+import com.util.FileUtil;
+import com.util.FileUtil2;
 import com.vo.Result;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -114,15 +120,15 @@ public class UploadFileController {
     }
 
     /**
-     * 文件下载 +ceph
+     * 1.文件下载 +ceph
      * 接收文件id
      *
      * @param
-     * @throws Exception
+     * @throws Exception 下载成功后有异常
      */
-    @GetMapping(value = "/downFile/{id}")
-    public Result download(@PathVariable("id") String uid) throws IOException {
-        System.out.println("下载的文件id: "+uid);
+    @GetMapping(value = "/downFileOld/{id}")
+    public Result download1(@PathVariable("id") String uid) throws IOException {
+        System.out.println("下载的文件id: " + uid);
         try {
             tFileInfoService.download(uid);
             Result result = new Result();
@@ -134,5 +140,18 @@ public class UploadFileController {
             result.error();
             return result;
         }
+    }
+
+    /**
+     * 2.文件下载 +ceph
+     * 接收文件id
+     *
+     * @param
+     * @throws Exception
+     */
+    @GetMapping(value = "/downFile/{id}")
+    public void download(@PathVariable("id") String uid) throws IOException {
+        System.out.println("下载的文件id: " + uid);
+        tFileInfoService.download(uid);
     }
 }

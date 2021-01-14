@@ -1,36 +1,33 @@
 package com.util;
 
 
-import com.ceph.MyCeph;
-import com.ceph.utils.CephUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
-// 文件下载工具类
+// 文件下载工具类 测试
+// test
 public class FileUtil2 {
-    public static void download2(String fileName, HttpServletResponse response, String fileKey) throws IOException {
+    public static void download2(String fileName,HttpServletResponse res) throws IOException {
         // 发送给客户端的数据
-        OutputStream outputStream = response.getOutputStream();
+        OutputStream outputStream = res.getOutputStream();
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
-        // 读取filename   "a.docx"/a.docx
-        System.out.println("FileUtil下载的文件名: " + fileName);
-        System.out.println("拼接的文件名: " + fileKey);
-        //文件下载的本地文件路径
+        // 读取filename    "a.docx"/a.docx
 
-//        bis = new BufferedInputStream(new FileInputStream(new File("")));
-        bis = new BufferedInputStream(new FileInputStream(new File("D:\\a.docx")));
-
+        //
+        bis = new BufferedInputStream(new FileInputStream(new File("D:\\work\\fuma\\code\\springboot-test\\fiel\\" + "c.docx")));
         int i = bis.read(buff);
         while (i != -1) {
-            // buff 替换 bytes
+//            name 文件名, NewType .文件类型 例如: .docx  .pdf .png
+//            res.setHeader("Content-Disposition", "attachment;filename=" + new String(("file").getBytes("utf-8"), "iso-8859-1"));
+
             outputStream.write(buff, 0, buff.length);
-            //name 文件名, NewType .文件类型 例如: .docx  .pdf .png
-//            response.setHeader("Content-Disposition", "attachment;filename=" + new String(("D:\\work\\fuma\\code\\springboot-test\\fiel\\" +"a.docx").getBytes("utf-8"), "iso-8859-1"));
             outputStream.flush();
             i = bis.read(buff);
-//        }
         }
     }
 }
