@@ -22,7 +22,7 @@ import java.util.List;
 public class GeneralJsonEntityQuery {
 
     @ApiModelProperty(value = "当前页码")
-    private Integer pageNo;
+    private Integer current;
 
     @ApiModelProperty(value = "每页条目数")
     private Integer pageSize;

@@ -36,19 +36,20 @@ public class SupplierController {
     @GetMapping("/query")
     public Result findAll(PageRequest pageRequest) {
         //获取页码
-        Integer pageNo = pageRequest.getPageNo();
+        Integer current = pageRequest.getCurrent();
         //每页条数
         Integer pageSize = pageRequest.getPageSize();
         try {
             //获取所有数据
 //            分页使用map的page对象
-            Page<TSupplier> pageParam = new Page<>(pageNo, pageSize);
+            Page<TSupplier> pageParam = new Page<>(current, pageSize);
 //            2.条件分页查询
             supplierService.pageQuery(pageParam);
             //返回结果
             List<TSupplier> list = pageParam.getRecords();
             long total1 = pageParam.getTotal();
-            System.out.println("pageNo:" + pageNo+"\n" +"pageSize: "+pageSize);
+            long current1 = pageParam.getCurrent();
+            System.out.println("getCurrent:" + current+"\n" +"pageSize: "+pageSize);
 
 //            成功,返回数据
             Data data = new Data();
@@ -56,6 +57,7 @@ public class SupplierController {
             Result result = new Result();
             data.setResults(list);
             data.setTotal(total1);
+            data.setCurrent(current1);
             result.ok();
             result.setData(data);
             return result;

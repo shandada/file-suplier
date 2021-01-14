@@ -64,6 +64,7 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
         List<TFileInfo> fileNames = baseMapper.selectList(queryWrapper);
         for (TFileInfo fileName : fileNames) {
             String supplierId = fileName.getSupplierId();
+            //去重目录
             System.out.println("supplierName:supplierId " + fileName.getSupplierName() + supplierId);
             queryWrapper
                     .eq("supplier_id", supplierId);
@@ -130,24 +131,21 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
         String fileName = tFileInfo.getFileName();
         //拼接的文件名
         String fileKey = tFileInfo.getFileKey();
-        System.out.println("详细数据: "+tFileInfo);
-        System.out.println("下载的文件名 && fileKey: " + fileName+"====="+fileKey);
+        System.out.println("详细数据: " + tFileInfo);
+        System.out.println("下载的文件名 && fileKey: " + fileName + "=====" + fileKey);
 
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = requestAttributes.getResponse();
+//        String type = new MimetypesFileTypeMap().getContentType(fileName);
         // 设置contenttype，即告诉客户端所发送的数据属于什么类型
-        String type = new MimetypesFileTypeMap().getContentType(fileName);
-        // 设置contenttype，即告诉客户端所发送的数据属于什么类型
-        response.setHeader("Content-type", type);
+//        response.setHeader("Content-type", type);
         // 设置编码
         String hehe = new String(fileName.getBytes("utf-8"), "iso-8859-1");
         // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
         response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
         FileUtil.download(fileName, response, fileKey);
 //        FileUtil2.download2(fileName,response);
-
     }
-
 
 
     //条件查询
@@ -161,7 +159,7 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
             build = new GeneralJsonQueryWrapperBuilder<TFileInfo>(TFileInfo.class).build(query);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
-            PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+            PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
             List<TFileInfo> tAlarms = baseMapper.selectList(build);
             //封装图片数据
             //封装返回对象

@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @ApiModel(value = "全局统一返回结果")
+
 public class Result {
     @ApiModelProperty(value = "返回码")
     private Integer code;

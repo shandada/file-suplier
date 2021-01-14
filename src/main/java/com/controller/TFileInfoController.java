@@ -76,26 +76,28 @@ public class TFileInfoController {
     @GetMapping("/query")
     public Result findAll(PageRequest pageRequest) {
         //获取页码
-        Integer pageNo = pageRequest.getPageNo();
+        Integer current = pageRequest.getCurrent();
         //每页条数
         Integer pageSize = pageRequest.getPageSize();
-        System.out.println("pageNo" + pageNo+"\n"+"pageSize" + pageSize);
+        System.out.println("current" + current+"\n"+"pageSize" + pageSize);
         System.out.println();
         try {
             //获取所有数据
 //            分页使用map的page对象
-            Page<TFileInfo> pageParam = new Page<>(pageNo, pageSize);
+            Page<TFileInfo> pageParam = new Page<>(current, pageSize);
 //            2.条件分页查询
             tFileInfoService.pageQuery(pageParam);
             //返回结果
             List<TFileInfo> list = pageParam.getRecords();
             long total1 = pageParam.getTotal();
+            long current1 = pageParam.getCurrent();
 //            成功,返回数据
             Data data = new Data();
             //返回数据信息
             Result result = new Result();
             data.setResults(list);
             data.setTotal(total1);
+            data.setCurrent(current1);
             result.ok();
             result.setData(data);
             return result;

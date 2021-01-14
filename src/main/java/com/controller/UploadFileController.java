@@ -1,12 +1,20 @@
 package com.controller;
 
+import com.excepetion.ServiceException;
 import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
 import com.service.SupplierFileService;
 import com.service.TFileInfoService;
+import com.util.FileSizeUtil;
 import com.util.FileUtil;
 import com.util.FileUtil2;
 import com.vo.Result;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -15,7 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -58,9 +67,10 @@ public class UploadFileController {
             @RequestParam("file") MultipartFile file, @PathVariable("id") String gid) {
         try {
             //文件大小
+            FileSizeUtil sizeUtil = new FileSizeUtil();
             long size = file.getSize();
-            String sizes = String.valueOf(size) + "KB";
-            System.out.println("sizes: " + sizes);
+            String sizes = sizeUtil.getPrintSize(size);
+            System.out.println("文件大小sizes: " + sizes);
             //文件全名
             String filenameAll = file.getOriginalFilename();
             // gbk转utf-8，需要确定原编码格式，不知道的话就试一下
@@ -71,7 +81,6 @@ public class UploadFileController {
             String[] split = filename.split("\\.");
             //文件上传名
             String UploadFileName = split[0];
-
             //后缀名
             String suffix = split[1];
             System.out.println(" filename 文件名: " + filename);
@@ -104,6 +113,7 @@ public class UploadFileController {
             tFileInfoService.save(tFileInfo);
             //上传到ceph
             supplierFileService.upload(file, gid, file_key);
+            System.out.println(file_key + "文件上传成功！");
             //返回数据信息
             Result result = new Result();
             //成功,返回数据
@@ -120,14 +130,14 @@ public class UploadFileController {
     }
 
     /**
-     * 1.文件下载 +ceph
+     * 文件下载 +ceph
      * 接收文件id
      *
      * @param
-     * @throws Exception 下载成功后有异常
+     * @throws Exception
      */
-    @GetMapping(value = "/downFileOld/{id}")
-    public Result download1(@PathVariable("id") String uid) throws IOException {
+    @GetMapping(value = "/downFile/{id}")
+    public Result download( @PathVariable("id") String uid) throws IOException {
         System.out.println("下载的文件id: " + uid);
         try {
             tFileInfoService.download(uid);
@@ -135,23 +145,9 @@ public class UploadFileController {
             result.ok();
             return result;
         } catch (IOException e) {
-            e.printStackTrace();
             Result result = new Result();
             result.error();
             return result;
         }
-    }
-
-    /**
-     * 2.文件下载 +ceph
-     * 接收文件id
-     *
-     * @param
-     * @throws Exception
-     */
-    @GetMapping(value = "/downFile/{id}")
-    public void download(@PathVariable("id") String uid) throws IOException {
-        System.out.println("下载的文件id: " + uid);
-        tFileInfoService.download(uid);
     }
 }

@@ -14,10 +14,9 @@ import java.util.List;
 public class OneChapter {
 
     //id
-
     private String supplierId;
     //供应商
     private String supplierName;
-
+//子节点
     private List<TwoFile> children = new ArrayList<>();
 }

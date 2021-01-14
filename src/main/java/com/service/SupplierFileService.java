@@ -95,7 +95,7 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
             build = new GeneralJsonQueryWrapperBuilder<TSupplier>(TSupplier.class).build(query);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
-            PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+            PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
             List<TSupplier> tAlarms = baseMapper.selectList(build);
             //封装图片数据
             //封装返回对象

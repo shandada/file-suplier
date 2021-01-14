@@ -15,11 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class PageRequest {
     // 页码
-    private Integer pageNo;
+    private Integer current;
     // 每页条数
     private Integer pageSize;
     //查询条件集合
     private List<ConditionList> conditions;
-
-
 }
