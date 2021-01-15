@@ -9,6 +9,7 @@ import com.ceph.utils.CephUtils;
 import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mapper.TFileInfoMapper;
 import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
 import com.pojo.query.Condition;
@@ -21,12 +22,14 @@ import com.vo.PageRequest;
 import com.vo.Result;
 import com.vo.ResultCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Results;
 import org.springframework.stereotype.Service;
 
 import com.mapper.SupplierMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,8 @@ import java.util.List;
 @Service
 @Transactional
 public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> {
+    @Resource
+    private TFileInfoMapper tFileInfoMapper;
 
     /**
      * 上传文件。
@@ -51,11 +56,12 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
     public void upload(MultipartFile file, String gid, String writeFile1) throws IOException {
         byte[] files = file.getBytes();
 //        System.out.println("file: "+file);
-        System.out.println("files:" +files);
+        System.out.println("files:" + files);
         MyCeph myCeph = new CephUtils("admin", "192.168.1.13", "AQArI9hfvp36IRAAFhB7U6t6ltcLSfHciZiy0A==");
         //拼接 文件 key
         myCeph.writeFile(writeFile1, files);
     }
+
     /**
      * 分页
      *
@@ -65,6 +71,11 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
     public void pageQuery(Page<TSupplier> pageParam) {
         //封装条件QueryWrapper
         QueryWrapper<TSupplier> queryWrapper = new QueryWrapper<>();
+        List<TSupplier> supplierList = baseMapper.selectList(queryWrapper);
+        //供应商查询所属文件信息
+        for (TSupplier thisSupper : supplierList) {
+            thisSupper.setTFileInfo(tFileInfoMapper.supplierId(thisSupper.getGid()));
+        }
         //执行搜索
         baseMapper.selectPage(pageParam, queryWrapper);
     }
@@ -96,13 +107,17 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
             PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
-            List<TSupplier> tAlarms = baseMapper.selectList(build);
-            //封装图片数据
+            List<TSupplier> selectList = baseMapper.selectList(build);
+
+            //供应商查询所属文件信息
+            for (TSupplier thisSupper : selectList) {
+                thisSupper.setTFileInfo(tFileInfoMapper.supplierId(thisSupper.getGid()));
+            }
             //封装返回对象
             Result result = new Result();
             result.ok();
-            PageInfo<TSupplier> pageInfo = new PageInfo<>(tAlarms);
-            Data<TSupplier> tAlarmData = new Data<TSupplier>(null, tAlarms, pageInfo.getTotal(), pageInfo.getPageNum());
+            PageInfo<TSupplier> pageInfo = new PageInfo<>(selectList);
+            Data<TSupplier> tAlarmData = new Data<TSupplier>(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
             result.setData(tAlarmData);
             //返回response
             return result;
@@ -113,5 +128,4 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
             return result;
         }
     }
-
 }

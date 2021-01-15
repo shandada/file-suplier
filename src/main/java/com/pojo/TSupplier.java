@@ -10,7 +10,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -75,5 +77,9 @@ public class TSupplier {
 //    @TableLogic(value = "0",delval = "1")
     @TableLogic
     private Integer isDelete;
+
+    //不对应数据库的字段
+    @TableField(exist = false)
+    private List<TFileInfo> tFileInfo;
 
 }

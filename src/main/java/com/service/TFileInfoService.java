@@ -46,7 +46,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
+public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> implements FileImpl {
 
     @Resource
     private TFileInfoMapper tFileInfoMapper;
@@ -117,6 +117,42 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
         }
     }
 
+
+    /**
+     * 条件查询
+     *
+     * @param
+     */
+    public Result queryAlarm(PageRequest pageRequest) {
+        //封装query
+        GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
+        query.setConditions(pageRequest.getConditions());
+        QueryWrapper<TFileInfo> build = null;
+        try {
+            //构建wrapperQuery搜索条件
+            build = new GeneralJsonQueryWrapperBuilder<TFileInfo>(TFileInfo.class).build(query);
+            //使用pageHelper插件进行非分页
+//            if(pageRequest)
+            PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
+            List<TFileInfo> tAlarms = baseMapper.selectList(build);
+            //封装图片数据
+            //封装返回对象
+            Result result = new Result();
+            result.ok();
+            PageInfo<TFileInfo> pageInfo = new PageInfo<>(tAlarms);
+            Data<TFileInfo> tAlarmData = new Data<TFileInfo>(null, tAlarms, pageInfo.getTotal(), pageInfo.getPageNum());
+            result.setData(tAlarmData);
+            //返回response
+            return result;
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            Result result = new Result();
+            result.error();
+            return result;
+        }
+    }
+
+
     /**
      * 文件下载
      *
@@ -147,35 +183,9 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> {
 //        FileUtil2.download2(fileName,response);
     }
 
-
-    //条件查询
-    public Result queryAlarm(PageRequest pageRequest) {
-        //封装query
-        GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
-        query.setConditions(pageRequest.getConditions());
-        QueryWrapper<TFileInfo> build = null;
-        try {
-            //构建wrapperQuery搜索条件
-            build = new GeneralJsonQueryWrapperBuilder<TFileInfo>(TFileInfo.class).build(query);
-            //使用pageHelper插件进行非分页
-//            if(pageRequest)
-            PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
-            List<TFileInfo> tAlarms = baseMapper.selectList(build);
-            //封装图片数据
-            //封装返回对象
-            Result result = new Result();
-            result.ok();
-            PageInfo<TFileInfo> pageInfo = new PageInfo<>(tAlarms);
-            Data<TFileInfo> tAlarmData = new Data<TFileInfo>(null, tAlarms, pageInfo.getTotal(), pageInfo.getPageNum());
-            result.setData(tAlarmData);
-            //返回response
-            return result;
-        } catch (ServiceException e) {
-            e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
-        }
+    @Override
+    public List<TFileInfo> all() {
+        return baseMapper.selectList(null);
     }
 }
 

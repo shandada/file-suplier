@@ -3,6 +3,7 @@ package com.controller;
 import com.excepetion.ServiceException;
 import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
+import com.service.FileImpl;
 import com.service.SupplierFileService;
 import com.service.TFileInfoService;
 import com.util.FileSizeUtil;
@@ -46,6 +47,8 @@ public class UploadFileController {
     //注入文件信息
     @Resource
     private TFileInfoService tFileInfoService;
+    @Resource
+    private FileImpl file;
 
     /**
      * 客户端,ip,秘钥
@@ -137,7 +140,7 @@ public class UploadFileController {
      * @throws Exception
      */
     @GetMapping(value = "/downFile/{id}")
-    public Result download( @PathVariable("id") String uid) throws IOException {
+    public Result download(@PathVariable("id") String uid) throws IOException {
         System.out.println("下载的文件id: " + uid);
         try {
             tFileInfoService.download(uid);
@@ -149,5 +152,10 @@ public class UploadFileController {
             result.error();
             return result;
         }
+    }
+
+    @GetMapping("/list")
+    public List<TFileInfo> id() {
+        return file.all();
     }
 }

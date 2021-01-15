@@ -8,6 +8,8 @@ import com.service.SupplierFileService;
 import com.vo.Data;
 import com.vo.PageRequest;
 import com.vo.Result;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -49,7 +51,7 @@ public class SupplierController {
             List<TSupplier> list = pageParam.getRecords();
             long total1 = pageParam.getTotal();
             long current1 = pageParam.getCurrent();
-            System.out.println("getCurrent:" + current+"\n" +"pageSize: "+pageSize);
+            System.out.println("query:getCurrent:" + current+"\n" +"pageSize: "+pageSize);
 
 //            成功,返回数据
             Data data = new Data();

@@ -13,6 +13,7 @@ import com.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -47,6 +48,8 @@ public class TFileInfoController {
     //注入文件信息
     @Resource
     private TFileInfoService tFileInfoService;
+
+
 
     /**
      * 树状目录

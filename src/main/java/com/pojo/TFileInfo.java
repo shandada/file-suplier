@@ -99,5 +99,4 @@ public class TFileInfo {
 //    @TableLogic(value = "0",delval = "1")
     @TableLogic
     private Integer isDelete;
-
 }

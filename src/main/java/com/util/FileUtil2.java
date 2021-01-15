@@ -42,6 +42,7 @@ public class FileUtil2 {
 //        System.out.println("ceph拿到的bytes: "+bytes);
 //        outputStream.write(bytes);
 //        //文件下载的本地文件路径
+
 //
 //        int i = bis.read(bytes);
 //        while (i != -1) {
