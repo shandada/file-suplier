@@ -16,5 +16,5 @@ import java.util.List;
 public interface FileImpl extends IService<TFileInfo> {
 
 //    public void download(String uid) throws IOException;
-    public List<TFileInfo> all();
+//    public List<TFileInfo> all();
 }

@@ -28,19 +28,41 @@
 
     <dependencies>
 
+
+        <dependency>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+            <version>0.0.20131108.vaadin1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--      导入阿里JSONObject相关依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.70</version>
+        </dependency>
+
+        <!--      HttpClient别名：HttpComponents-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.ceph/rados -->
+        <!--        连接ceph-->
         <dependency>
             <groupId>com.ceph</groupId>
             <artifactId>rados</artifactId>
             <version>0.5.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.ceph</groupId>
             <artifactId>libcephfs</artifactId>
             <version>0.80.5</version>
         </dependency>
-
+        <!--        连接ceph-->
 
         <!--          @Id   @GeneratedValue(generator = "JDBC")-->
         <dependency>
@@ -59,15 +81,28 @@
         <!-- 引入Druid依赖，阿里巴巴所提供的数据源 -->
         <!--        swagger-ui -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.8.0</version>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.5.21</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.8.0</version>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+        <!--        swagger-ui -->
+
+
         <!--  import org.apache.commons.lang3.StringUtils-->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -198,6 +233,12 @@
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.3</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

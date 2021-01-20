@@ -4,25 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.ceph.MyCeph;
-import com.ceph.utils.CephUtils;
+import com.ceph.CephClient;
 import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mapper.TFileInfoMapper;
-import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
-import com.pojo.query.Condition;
-import com.pojo.query.ConditionList;
 import com.pojo.query.GeneralJsonEntityQuery;
-import com.pojo.query.SuppQuery;
-import com.util.GeneralJsonQueryWrapperBuilder;
+import com.pojo.query.GeneralJsonQueryWrapperBuilder;
+import com.util.CephPropertiesUtil;
 import com.vo.Data;
 import com.vo.PageRequest;
 import com.vo.Result;
-import com.vo.ResultCode;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Results;
 import org.springframework.stereotype.Service;
 
 import com.mapper.SupplierMapper;
@@ -31,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,11 +47,11 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
      */
     public void upload(MultipartFile file, String gid, String writeFile1) throws IOException {
         byte[] files = file.getBytes();
-//        System.out.println("file: "+file);
         System.out.println("files:" + files);
-        MyCeph myCeph = new CephUtils("admin", "192.168.1.13", "AQArI9hfvp36IRAAFhB7U6t6ltcLSfHciZiy0A==");
+        CephClient cephClient = new CephClient();
+        cephClient.getConnect("admin", CephPropertiesUtil.CEPH_IP,CephPropertiesUtil.KEY);
         //拼接 文件 key
-        myCeph.writeFile(writeFile1, files);
+        cephClient.writeFile(writeFile1, files);
     }
 
     /**
@@ -97,7 +89,6 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
     //条件查询
     public Result queryAlarm(PageRequest pageRequest) {
         //封装query
-
         GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
         query.setConditions(pageRequest.getConditions());
         QueryWrapper<TSupplier> build = null;

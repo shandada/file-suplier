@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 第一级目录
+ *
+ * @author Administrator
+ */
 //第一级目录
 @Data
 @AllArgsConstructor
@@ -17,6 +22,6 @@ public class OneChapter {
     private String supplierId;
     //供应商
     private String supplierName;
-//子节点
+    //子节点
     private List<TwoFile> children = new ArrayList<>();
 }

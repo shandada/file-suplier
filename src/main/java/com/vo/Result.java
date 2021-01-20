@@ -25,6 +25,7 @@ public class Result {
 //    @ApiModelProperty(value = "返回数据")
 //    private HashMap<String, Object> data = new HashMap<>();
 
+
     @ApiModelProperty(value = "返回数据")
     private com.vo.Data data;
 

@@ -1,19 +1,16 @@
 package com.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.excepetion.ServiceException;
 import com.pojo.TFileInfo;
-import com.pojo.query.FileQuery;
+import com.pojo.query.GeneralJsonStatisticsViewQuery;
+import com.pojo.query.GeneralJsonStatisticsViewQueryProcessor;
 import com.service.SupplierFileService;
 import com.service.TFileInfoService;
-import com.vo.Data;
-import com.vo.OneChapter;
-import com.vo.PageRequest;
-import com.vo.Result;
+import com.util.CephPropertiesUtil;
+import com.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,15 +27,8 @@ import java.util.UUID;
 //文件controller
 @RestController
 @RequestMapping("/fileName")
-@Api(description = "文件管理")
+@Api(tags = "文件管理-file")
 public class TFileInfoController {
-    /**
-     * 客户端,ip,秘钥
-     */
-    //TODO  ceph
-//    public MyCeph cephUtils = new CephUtils("admin", "192.168.1.13:6789", "198.162.1.1.2");
-    //返回数据类型
-
     //注入session
     @Resource
     private HttpSession session;
@@ -50,17 +40,65 @@ public class TFileInfoController {
     private TFileInfoService tFileInfoService;
 
 
+    /**
+     * 文件实体统计接口设计
+     */
+    @ApiOperation(value = "文件实体统计接口", notes = "应用本体")
+    @PostMapping("/statistics")
+    public GeneralJsonStatisticsViewVo statisAlarm(@RequestBody GeneralJsonStatisticsViewQuery query) {
+        GeneralJsonStatisticsViewQueryProcessor<TFileInfo> processor = new GeneralJsonStatisticsViewQueryProcessor<>(tFileInfoService, TFileInfo.class);
+        GeneralJsonStatisticsViewVo viewVo = null;
+        try {
+            viewVo = processor.doStatistics(query);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        return viewVo;
+    }
+//    @GetMapping("/tree2")
+//    public Result findAllCategorys2() {
+//        // 1. 查找一级分类
+////        List<TFileInfo> list1 = tFileInfoService.findCategoryByParentid0("supplier_id");
+//        List<TFileInfo> list1 = tFileInfoService.find1("0");
+//        // 2. 遍历一级分类，查找二级分类
+//        for (TFileInfo c1 : list1) {
+//            //3. c1.id就是二级分类的父id
+//            List<TFileInfo> list2 = tFileInfoService.find2(c1.getSupplierId());
+//            //4. list2就是当前一级的二级分类,将list2给c1的children
+//            c1.setChildren(list2);
+//            //5. 遍历二级分类list2，查找三级分类
+//            for (TFileInfo c2 : list2) {
+//                //6. 通过c2.id 获取三级分类的数据
+//                List<TFileInfo> list3 = tFileInfoService.find3(c1.getSupplierId());
+//                System.out.println("c2= " + c2.getSupplierId());
+//                //7. 将list3给c2的children
+//                c2.setChildren(list3);
+//            }
+//        }
+//        // 8. 组装结果，返回
+//        Data data = new Data();
+//        data.setResults(list1);
+//        //返回数据信息
+//        Result result = new Result();
+//        result.ok();
+//        result.setData(data);
+//        return result;
+//    }
 
     /**
      * 树状目录
      *
      * @return
      */
+    @ApiOperation(value = "树状目录", notes = "应用本体")
     @GetMapping("/treeAll")
     public Result getChapterList() {
         List<OneChapter> list = tFileInfoService.queryChapterAndVideoList();
-//        if(list.size()>=0){
-        //
+
+
+        System.out.println(CephPropertiesUtil.ADMIN);
+        System.out.println(CephPropertiesUtil.CEPH_IP);
+        System.out.println(CephPropertiesUtil.KEY);
         Data data = new Data();
         //返回数据信息
         Result result = new Result();
@@ -71,58 +109,15 @@ public class TFileInfoController {
     }
 
     /**
-     * 分页查询所有
-     * 文件列表
-     *
-     * @return
-     */
-    @GetMapping("/query")
-    public Result findAll(PageRequest pageRequest) {
-        //获取页码
-        Integer current = pageRequest.getCurrent();
-        //每页条数
-        Integer pageSize = pageRequest.getPageSize();
-        System.out.println("current" + current+"\n"+"pageSize" + pageSize);
-        System.out.println();
-        try {
-            //获取所有数据
-//            分页使用map的page对象
-            Page<TFileInfo> pageParam = new Page<>(current, pageSize);
-//            2.条件分页查询
-            tFileInfoService.pageQuery(pageParam);
-            //返回结果
-            List<TFileInfo> list = pageParam.getRecords();
-            long total1 = pageParam.getTotal();
-            long current1 = pageParam.getCurrent();
-//            成功,返回数据
-            Data data = new Data();
-            //返回数据信息
-            Result result = new Result();
-            data.setResults(list);
-            data.setTotal(total1);
-            data.setCurrent(current1);
-            result.ok();
-            result.setData(data);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            //失败,返回错误信息
-            //返回数据信息
-            Result result = new Result();
-            result.error();
-            return result;
-        }
-    }
-
-    /**
      * 多条件查询
      *
      * @param
      * @return
      */
+    @ApiOperation(value = "多条件查询", notes = "应用本体")
     @PostMapping("/condition")
-    public Result queryAlarm(@RequestBody PageRequest pageRequest){
-        Result result=tFileInfoService.queryAlarm(pageRequest);
+    public Result queryAlarm(@RequestBody PageRequest pageRequest) {
+        Result result = tFileInfoService.queryAlarm(pageRequest);
         return result;
     }
 
@@ -132,6 +127,7 @@ public class TFileInfoController {
      * @param uid
      * @return
      */
+    @ApiOperation(value = "文件详情查询", notes = "应用本体")
     @GetMapping("/detail/{id}")
     public Result findAll(@PathVariable("id") String uid) {
         try {
@@ -159,7 +155,7 @@ public class TFileInfoController {
      * @param fileName
      * @return
      */
-
+    @ApiOperation(value = "文件创建", notes = "应用本体")
     @PostMapping("/create")
     public Result created(@RequestBody TFileInfo fileName, HttpServletRequest request) {
         try {
@@ -167,8 +163,7 @@ public class TFileInfoController {
             fileName.setUid(UUID.randomUUID().toString().replaceAll("-", ""));
             tFileInfoService.save(fileName);
             String uid = fileName.getUid();
-            System.out.println(uid+"uid");
-
+            System.out.println(uid + "uid");
 
             Result result = new Result();
             result.ok();
@@ -188,10 +183,13 @@ public class TFileInfoController {
      * @param fileName
      * @return
      */
+    @ApiOperation(value = "更新文件", notes = "应用本体")
     @PutMapping("/update")
     public Result update(@RequestBody TFileInfo fileName) {
         //更新文件信息并更新
         boolean flag = tFileInfoService.updateById(fileName);
+
+        System.out.println("更新文件信息 = " + fileName);
         //判断 flag为true 成功, 否则失败
         if (flag) {
             Result result = new Result();
@@ -209,6 +207,7 @@ public class TFileInfoController {
      * @param ids
      * @return
      */
+    @ApiOperation(value = "单个和批量删除", notes = "应用本体")
     @DeleteMapping("/delete")
     public Result delMany(@RequestBody String[] ids) {
         try {

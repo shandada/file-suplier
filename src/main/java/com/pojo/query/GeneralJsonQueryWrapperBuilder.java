@@ -1,4 +1,4 @@
-package com.util;
+package com.pojo.query;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

@@ -7,36 +7,26 @@ import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pojo.TFileInfo;
-import com.pojo.TSupplier;
-import com.pojo.query.Condition;
-import com.pojo.query.ConditionList;
-import com.pojo.query.FileQuery;
 import com.pojo.query.GeneralJsonEntityQuery;
+import com.pojo.query.GeneralJsonStatisticsViewQuery;
+import com.pojo.query.GeneralJsonStatisticsViewQueryProcessor;
 import com.util.FileUtil;
-import com.util.FileUtil2;
-import com.util.GeneralJsonQueryWrapperBuilder;
+import com.pojo.query.GeneralJsonQueryWrapperBuilder;
 import com.vo.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Results;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mapper.TFileInfoMapper;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,9 +42,10 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
     private TFileInfoMapper tFileInfoMapper;
 
 
-    //树状方法
+    /**
+     * 目录树状
+     */
     public List<OneChapter> queryChapterAndVideoList() {
-
         //定义一个目录集合
         List<OneChapter> oneChapterList = new ArrayList<>();
         //先查询目录列表集合
@@ -65,9 +56,9 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
         for (TFileInfo fileName : fileNames) {
             String supplierId = fileName.getSupplierId();
             //去重目录
-            System.out.println("supplierName:supplierId " + fileName.getSupplierName() + supplierId);
             queryWrapper
                     .eq("supplier_id", supplierId);
+            System.out.println("supplierName:supplierId " + fileName.getSupplierName() + supplierId);
         }
         //再遍历章节集合，获取每个节点ID(版本号)
         for (TFileInfo eduChapter : fileNames) {
@@ -77,6 +68,7 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
             QueryWrapper<TFileInfo> videoWrapper = new QueryWrapper<>();
             videoWrapper.eq("supplier_id", oneChapter.getSupplierId());
             List<TFileInfo> eduVideoList = tFileInfoMapper.selectList(videoWrapper);
+            System.out.println("eduVideoList = " + eduVideoList);
             //把小节的列表添加目录中
             for (TFileInfo thisFile : eduVideoList) {
                 TwoFile twoFile = new TwoFile();
@@ -89,6 +81,10 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
         }
         return oneChapterList;
     }
+
+    /**
+     * 目录树状2
+     */
 
     /**
      * 分页
@@ -128,9 +124,10 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
         GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
         query.setConditions(pageRequest.getConditions());
         QueryWrapper<TFileInfo> build = null;
+
         try {
             //构建wrapperQuery搜索条件
-            build = new GeneralJsonQueryWrapperBuilder<TFileInfo>(TFileInfo.class).build(query);
+            build = new GeneralJsonQueryWrapperBuilder<>(TFileInfo.class).build(query);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
             PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
@@ -144,6 +141,7 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
             result.setData(tAlarmData);
             //返回response
             return result;
+
         } catch (ServiceException e) {
             e.printStackTrace();
             Result result = new Result();
@@ -151,6 +149,7 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
             return result;
         }
     }
+
 
 
     /**
@@ -172,20 +171,66 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
 
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = requestAttributes.getResponse();
-//        String type = new MimetypesFileTypeMap().getContentType(fileName);
-        // 设置contenttype，即告诉客户端所发送的数据属于什么类型
 //        response.setHeader("Content-type", type);
         // 设置编码
         String hehe = new String(fileName.getBytes("utf-8"), "iso-8859-1");
         // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
         response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
-        FileUtil.download(fileName, response, fileKey);
+
+        FileUtil fileUtil = new FileUtil();
+        fileUtil.download(fileName, response, fileKey);
 //        FileUtil2.download2(fileName,response);
     }
 
-    @Override
-    public List<TFileInfo> all() {
-        return baseMapper.selectList(null);
+
+    //    public Result queryAlarm(PageRequest pageRequest) {
+//        GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
+//        query.setConditions(pageRequest.getConditions());
+//
+//        GeneralJsonQueryWrapperBuilder<TFileInfo> builder = new GeneralJsonQueryWrapperBuilder<>(TFileInfo.class);
+//        QueryWrapper<TFileInfo> wrapper = null;
+//        try {
+//            wrapper = builder.build(query);
+//            if (wrapper == null) {
+//                wrapper = new QueryWrapper<>();
+//            }
+//        } catch (ServiceException e) {
+//            e.printStackTrace();
+//            Result result = new Result();
+//            result.error();
+//            return result;
+//        }
+//        Page<TFileInfo> page = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+//        Page<TFileInfo> infoPage = this.page(page, wrapper);
+//        Result result = new Result();
+//        Data<TFileInfo> tAlarmData = new Data<>(null, infoPage.getRecords(),  infoPage.getTotal(), infoPage.getPages());
+//        result.setData(tAlarmData);
+//        return result;
+//    }
+
+
+    public List<TFileInfo> find1(String tag) {
+        QueryWrapper<TFileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tag", tag);
+        return baseMapper.selectList(queryWrapper);
+    }
+
+    public List<TFileInfo> find2(String supplier_id) {
+        QueryWrapper<TFileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("supplier_id", supplier_id);
+        return baseMapper.selectList(queryWrapper);
+    }
+
+    public List<TFileInfo> find3(String supplier_id) {
+        QueryWrapper<TFileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("supplier_id", supplier_id);
+        return baseMapper.selectList(queryWrapper);
+    }
+
+
+    public TFileInfo findID(String uid) {
+        TFileInfo tFileInfo = baseMapper.selectById(uid);
+        return tFileInfo;
     }
 }
 

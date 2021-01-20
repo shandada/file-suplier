@@ -3,9 +3,6 @@ package com.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.pojo.TFileInfo;
 import org.apache.ibatis.annotations.*;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.sql.SQLOutput;
 import java.util.List;
 
 
@@ -30,4 +27,5 @@ public interface TFileInfoMapper extends BaseMapper<TFileInfo> {
             @Result(column = "isDelete", property = "is_delete"),
     })
     public List<TFileInfo> supplierId(@Param("gid") String gid);
+
 }
