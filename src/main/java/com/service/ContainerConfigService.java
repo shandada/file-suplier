@@ -6,16 +6,12 @@ import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mapper.ContainerConfigMapper;
-import com.mapper.SupplierMapper;
-import com.mapper.TFileInfoMapper;
 import com.pojo.ContainerConfig;
-import com.pojo.TFileInfo;
-import com.pojo.TSupplier;
 import com.pojo.query.GeneralJsonEntityQuery;
 import com.pojo.query.GeneralJsonQueryWrapperBuilder;
-import com.vo.Data;
 import com.vo.PageRequest;
 import com.vo.Result;
+import com.vo.ResultData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +39,7 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
         QueryWrapper<ContainerConfig> build = null;
         try {
             //构建wrapperQuery搜索条件
-            build = new GeneralJsonQueryWrapperBuilder<ContainerConfig>(ContainerConfig.class).build(query);
+            build = new GeneralJsonQueryWrapperBuilder<ContainerConfig>(ContainerConfig.class).build(query, false);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
             PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
@@ -54,18 +50,14 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
                 thiConfig.setTFileInfo(tFileInfoService.findID(thiConfig.getFileId()));
             }
             //封装返回对象
-            Result result = new Result();
-            result.ok();
+
             PageInfo<ContainerConfig> pageInfo = new PageInfo<>(selectList);
-            Data<ContainerConfig> containerConfigData = new Data<ContainerConfig>(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
-            result.setData(containerConfigData);
+            ResultData containerConfigData = new ResultData(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
             //返回response
-            return result;
+            return Result.okDataes(containerConfigData);
         } catch (ServiceException e) {
             e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
+            return Result.error();
         }
     }
 }

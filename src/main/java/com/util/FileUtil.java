@@ -10,7 +10,7 @@ import java.io.*;
  * @author Administrator
  */ // 文件下载工具类  加ceph
 public class FileUtil {
-    public  void download(String fileName, HttpServletResponse response, String fileKey) throws IOException {
+    public void download(String fileName, HttpServletResponse response, String fileKey) throws IOException {
         // 发送给客户端的数据
         OutputStream outputStream = response.getOutputStream();
         ByteArrayInputStream bis = null;
@@ -20,7 +20,7 @@ public class FileUtil {
 
         // TODO   连接ceph 下载文件  // void writeFile(String fileName, byte[] file);
         CephClient cephClient = new CephClient();
-        cephClient.getConnect("admin", CephPropertiesUtil.CEPH_IP,CephPropertiesUtil.KEY);
+        cephClient.getConnect("admin", CephPropertiesUtil.CEPH_IP, CephPropertiesUtil.KEY);
 //        MyCeph myCeph = new CephUtils(UUID.randomUUID().toString().substring(0,5),CephPropertiesUtil.CEPH_IP,CephPropertiesUtil.KEY);
         //拼接 文件 key
         //  下载的字节 bytes

@@ -1,30 +1,26 @@
 package com.service;
 
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mapper.TFileInfoMapper;
 import com.pojo.TFileInfo;
 import com.pojo.query.GeneralJsonEntityQuery;
-import com.pojo.query.GeneralJsonStatisticsViewQuery;
-import com.pojo.query.GeneralJsonStatisticsViewQueryProcessor;
-import com.util.FileUtil;
 import com.pojo.query.GeneralJsonQueryWrapperBuilder;
+import com.util.FileUtil;
 import com.vo.*;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mapper.TFileInfoMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,21 +83,6 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
      */
 
     /**
-     * 分页
-     *
-     * @param pageParam
-     * @param pageParam
-     */
-    public void pageQuery(Page<TFileInfo> pageParam) {
-        //封装条件QueryWrapper
-        QueryWrapper<TFileInfo> queryWrapper = new QueryWrapper<>();
-
-        //执行搜索
-        baseMapper.selectPage(pageParam, queryWrapper);
-
-    }
-
-    /**
      * 多个文件删除
      *
      * @param ids
@@ -127,29 +108,21 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
 
         try {
             //构建wrapperQuery搜索条件
-            build = new GeneralJsonQueryWrapperBuilder<>(TFileInfo.class).build(query);
+            build = new GeneralJsonQueryWrapperBuilder<>(TFileInfo.class).build(query, true);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
             PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
             List<TFileInfo> tAlarms = baseMapper.selectList(build);
-            //封装图片数据
-            //封装返回对象
-            Result result = new Result();
-            result.ok();
+
             PageInfo<TFileInfo> pageInfo = new PageInfo<>(tAlarms);
-            Data<TFileInfo> tAlarmData = new Data<TFileInfo>(null, tAlarms, pageInfo.getTotal(), pageInfo.getPageNum());
-            result.setData(tAlarmData);
-            //返回response
-            return result;
+            ResultData tAlarmData = new ResultData(null, tAlarms, pageInfo.getTotal(), pageInfo.getPageNum());
+            return Result.okDataes(tAlarmData);
 
         } catch (ServiceException e) {
             e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
+            return Result.error();
         }
     }
-
 
 
     /**
@@ -181,32 +154,6 @@ public class TFileInfoService extends ServiceImpl<TFileInfoMapper, TFileInfo> im
         fileUtil.download(fileName, response, fileKey);
 //        FileUtil2.download2(fileName,response);
     }
-
-
-    //    public Result queryAlarm(PageRequest pageRequest) {
-//        GeneralJsonEntityQuery query = new GeneralJsonEntityQuery();
-//        query.setConditions(pageRequest.getConditions());
-//
-//        GeneralJsonQueryWrapperBuilder<TFileInfo> builder = new GeneralJsonQueryWrapperBuilder<>(TFileInfo.class);
-//        QueryWrapper<TFileInfo> wrapper = null;
-//        try {
-//            wrapper = builder.build(query);
-//            if (wrapper == null) {
-//                wrapper = new QueryWrapper<>();
-//            }
-//        } catch (ServiceException e) {
-//            e.printStackTrace();
-//            Result result = new Result();
-//            result.error();
-//            return result;
-//        }
-//        Page<TFileInfo> page = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
-//        Page<TFileInfo> infoPage = this.page(page, wrapper);
-//        Result result = new Result();
-//        Data<TFileInfo> tAlarmData = new Data<>(null, infoPage.getRecords(),  infoPage.getTotal(), infoPage.getPages());
-//        result.setData(tAlarmData);
-//        return result;
-//    }
 
 
     public List<TFileInfo> find1(String tag) {

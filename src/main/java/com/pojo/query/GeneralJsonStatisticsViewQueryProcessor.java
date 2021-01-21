@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * <p>
  * 调用方法：
  * 1.使用实体类作为关系泛型参数实例化对象，传入相应实体的（MBP）Service层对象到构造方法。
- * 2.使用 {@link GeneralJsonStatisticsViewQuery} 作为参数传入 {@link #doStatistics(GeneralJsonStatisticsViewQuery)}
+ * 2.使用 {@link GeneralJsonStatisticsViewQuery} 作为参数传入 {@link #(GeneralJsonStatisticsViewQuery)}
  * 方法中，得到统计结果。
  *
  * @param <EntityType> 实体类
@@ -39,14 +39,14 @@ public class GeneralJsonStatisticsViewQueryProcessor<EntityType> {
         this.clazz = clazz;
     }
 
-    public GeneralJsonStatisticsViewVo doStatistics(GeneralJsonStatisticsViewQuery query) throws ServiceException {
+    public GeneralJsonStatisticsViewVo doStatistics(GeneralJsonStatisticsViewQuery query,boolean isUnderline) throws ServiceException {
 
         // 查询目标实体
         GeneralJsonQueryWrapperBuilder<EntityType> wrapperBuilder = new GeneralJsonQueryWrapperBuilder<>(clazz);
         GeneralJsonEntityQuery newQuery = new GeneralJsonEntityQuery();
         newQuery.setConditions(query.getConditions());
         List<String> methods = Arrays.stream(clazz.getMethods()).map(Method::getName).collect(Collectors.toList());
-        QueryWrapper<EntityType> queryWrapper = wrapperBuilder.build(newQuery);
+        QueryWrapper<EntityType> queryWrapper = wrapperBuilder.build(newQuery,isUnderline);
 
         GeneralJsonStatisticsViewVo vo = new GeneralJsonStatisticsViewVo();
         HashMap<String, Object> resultMap = new HashMap<>();

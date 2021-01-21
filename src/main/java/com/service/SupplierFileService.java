@@ -13,9 +13,9 @@ import com.pojo.TSupplier;
 import com.pojo.query.GeneralJsonEntityQuery;
 import com.pojo.query.GeneralJsonQueryWrapperBuilder;
 import com.util.CephPropertiesUtil;
-import com.vo.Data;
 import com.vo.PageRequest;
 import com.vo.Result;
+import com.vo.ResultData;
 import org.springframework.stereotype.Service;
 
 import com.mapper.SupplierMapper;
@@ -48,6 +48,7 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
     public void upload(MultipartFile file, String gid, String writeFile1) throws IOException {
         byte[] files = file.getBytes();
         System.out.println("files:" + files);
+        //连接CEph
         CephClient cephClient = new CephClient();
         cephClient.getConnect("admin", CephPropertiesUtil.CEPH_IP,CephPropertiesUtil.KEY);
         //拼接 文件 key
@@ -94,7 +95,7 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
         QueryWrapper<TSupplier> build = null;
         try {
             //构建wrapperQuery搜索条件
-            build = new GeneralJsonQueryWrapperBuilder<TSupplier>(TSupplier.class).build(query);
+            build = new GeneralJsonQueryWrapperBuilder<TSupplier>(TSupplier.class).build(query,true);
             //使用pageHelper插件进行非分页
 //            if(pageRequest)
             PageHelper.startPage(pageRequest.getCurrent(), pageRequest.getPageSize());
@@ -105,18 +106,13 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, TSupplier> 
                 thisSupper.setTFileInfo(tFileInfoMapper.supplierId(thisSupper.getGid()));
             }
             //封装返回对象
-            Result result = new Result();
-            result.ok();
             PageInfo<TSupplier> pageInfo = new PageInfo<>(selectList);
-            Data<TSupplier> tAlarmData = new Data<TSupplier>(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
-            result.setData(tAlarmData);
+            ResultData tAlarmData = new ResultData(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
+
             //返回response
-            return result;
+            return Result.okDataes(tAlarmData);
         } catch (ServiceException e) {
-            e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
+            return Result.error();
         }
     }
 }

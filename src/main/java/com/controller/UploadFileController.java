@@ -2,13 +2,12 @@ package com.controller;
 
 import com.pojo.TFileInfo;
 import com.pojo.TSupplier;
-import com.pojo.query.Group;
+import com.pojo.query.GroupQuery;
 import com.pojo.query.SuppQuery;
 import com.service.FileImpl;
 import com.service.SupplierFileService;
 import com.service.TFileInfoService;
 import com.util.FileSizeUtil;
-import com.vo.Data;
 import com.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -41,22 +40,14 @@ public class UploadFileController {
     //注入供应商service
     @Resource
     private SupplierFileService supplierFileService;
+
     //注入文件信息
     @Resource
     private TFileInfoService tFileInfoService;
-    @Resource
-    private FileImpl file;
+
     //远程调用
     @Resource
     private RestTemplate restTemplate;
-
-    /**
-     * 客户端,ip,秘钥
-     */
-    //返回数据类型
-//    Data data = new Data();
-//    //返回数据信息
-//    Result result = new Result();
 
     /**
      * 文件上传+ceph   文件信息存入数据库
@@ -117,21 +108,12 @@ public class UploadFileController {
             System.out.println(file_key + "文件上传成功！");
 
             //返回数据信息  ! ! ! ! ! 加上 上传的文件id
-            Data data = new Data();
             System.out.println("上传成功后 返回的uid = " + uid);
-            data.setResult(uid);
-            Result result = new Result();
-            result.setData(data);
-            //成功,返回数据
-            result.ok();
-            return result;
+            return Result.okData(uid);
         } catch (Exception e) {
             e.printStackTrace();
             //返回数据信息
-            Result result = new Result();
-            //失败,返回错误信息
-            result.error();
-            return result;
+            return Result.error();
         }
     }
 
@@ -144,29 +126,29 @@ public class UploadFileController {
      */
     @ApiOperation(value = "文件下载 +ceph ", notes = "应用本体")
     @GetMapping(value = "/downFile/{id}")
-    public Result download(@PathVariable("id")String uid) throws IOException {
+    public Result download(@PathVariable("id") String uid) throws IOException {
         System.out.println("下载的文件id: " + uid);
         try {
             tFileInfoService.download(uid);
-            Result result = new Result();
-            result.ok();
-            return result;
+            return Result.ok();
         } catch (IOException e) {
-            Result result = new Result();
-            result.error();
-            return result;
+            return Result.error();
         }
     }
 
-    @GetMapping("/restTemplate/add")
-    public ResponseEntity<String> add() {
-        SuppQuery group = new SuppQuery();
-        group.setGid("123");
-//        ResponseEntity<String> entity = restTemplate.postForEntity("http://192.168.1.205:8081/kube/v1/group/add", group, String.class);
-//        group.setGid("1234424432");
-        ResponseEntity<String> entity = restTemplate.postForEntity("http://localhost:8089/aip/v1/supplier/create", group, String.class);
+    /**
+     * 远程调用添加方法  url 远程的添加路径
+     *
+     * @param suppQuery
+     * @return
+     */
+    @ApiOperation(value = "远程调用接口测试-Test", notes = "应用本体")
+    @PostMapping("/restTemplate/add")
+    public ResponseEntity<String> add(SuppQuery suppQuery) {
+        suppQuery.setGid("123");
+        ResponseEntity<String> entity = restTemplate.postForEntity("http://localhost:8089/aip/v1/supplier/create", suppQuery, String.class);
         System.out.println("entity = " + entity);
-        System.out.println("group = " + group);
+        System.out.println("suppQuery = " + suppQuery);
         return entity;
     }
 }

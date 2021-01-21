@@ -1,11 +1,10 @@
 package com.util;
 
 /**
- * @Description:
- * @Auther: Shan PengKun
- * @Date: 2021/1/14 10:50
+ * @ Description:  上传文件大小 字符串处理
+ * @ Auther: Shan PengKun
+ * @ Date: 2021/1/14 10:50
  */
-//上传文件大小字符串处理
 public class FileSizeUtil {
     public String getPrintSize(long size) {
         //如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义

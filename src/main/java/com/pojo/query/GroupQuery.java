@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * @Description:
  * @Auther: logo丶西亚卡姆
@@ -16,7 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @ApiModel(value = "组织", description = "")
 
-public class Group {
+public class GroupQuery {
 
     @ApiModelProperty(value = "文件id")
     private String uuid;
@@ -31,5 +33,8 @@ public class Group {
     private String overview;
 
     @ApiModelProperty(value = "创建时间")
-    private String createTime;
+    @TableField(value = "createTime", fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyy-MM-dd")
+    private Date createTime;
 }

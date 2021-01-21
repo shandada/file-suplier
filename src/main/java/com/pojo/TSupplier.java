@@ -78,7 +78,10 @@ public class TSupplier {
     @TableField(exist = false)
     private List<TFileInfo> tFileInfo;
 
-    @ApiModelProperty(value = "获取前端传的token",required = true)
+
+    @ApiModelProperty(value = "获取前端传的角色id",required = true)
     @TableField(exist = false)
-    private String token;
+    private String roleId;
+
+
 }

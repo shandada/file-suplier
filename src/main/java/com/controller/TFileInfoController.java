@@ -20,22 +20,25 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @Description:
+ * @author Administrator
+ * @Description: //文件controller
  * @Auther: logo丶西亚卡姆
  * @Date: 2021/1/6 16:45
  */
-//文件controller
+
 @RestController
 @RequestMapping("/fileName")
 @Api(tags = "文件管理-file")
 public class TFileInfoController {
-    //注入session
-    @Resource
-    private HttpSession session;
-    //注入供应商service
+
+    /**
+     * 注入供应商service
+     */
     @Resource
     private SupplierFileService supplierService;
-    //注入文件信息
+    /**
+     * 注入文件信息
+     */
     @Resource
     private TFileInfoService tFileInfoService;
 
@@ -49,13 +52,122 @@ public class TFileInfoController {
         GeneralJsonStatisticsViewQueryProcessor<TFileInfo> processor = new GeneralJsonStatisticsViewQueryProcessor<>(tFileInfoService, TFileInfo.class);
         GeneralJsonStatisticsViewVo viewVo = null;
         try {
-            viewVo = processor.doStatistics(query);
+            viewVo = processor.doStatistics(query, true);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
         return viewVo;
     }
-//    @GetMapping("/tree2")
+
+    /**
+     * 树状目录
+     *
+     * @return
+     */
+    @ApiOperation(value = "树状目录", notes = "应用本体")
+    @GetMapping("/treeAll")
+    public Result getChapterList() {
+        List<OneChapter> list = tFileInfoService.queryChapterAndVideoList();
+        ResultData resultData = new ResultData();
+        resultData.setResults(list);
+
+        return Result.okData(resultData);
+    }
+
+    /**
+     * 多条件查询
+     *
+     * @param
+     * @return
+     */
+    @ApiOperation(value = "多条件查询", notes = "应用本体")
+    @PostMapping("/condition")
+    public Result queryAlarm(@RequestBody PageRequest pageRequest) {
+        Result result = tFileInfoService.queryAlarm(pageRequest);
+        return result;
+    }
+
+    /**
+     * 文件详情查询
+     *
+     * @param uid
+     * @return
+     */
+    @ApiOperation(value = "文件详情查询", notes = "应用本体")
+    @GetMapping("/detail/{id}")
+    public Result findAll(@PathVariable("id") String uid) {
+        try {
+            TFileInfo byId = tFileInfoService.getById(uid);
+            return Result.okData(byId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //返回数据信息
+            return Result.error();
+        }
+    }
+
+    /**
+     * 文件创建,
+     *
+     * @param fileName
+     * @return
+     */
+    @ApiOperation(value = "文件创建", notes = "应用本体")
+    @PostMapping("/create")
+    public Result created(@RequestBody TFileInfo fileName, HttpServletRequest request) {
+        try {
+            //添加文件信息
+            fileName.setUid(UUID.randomUUID().toString().replaceAll("-", ""));
+            tFileInfoService.save(fileName);
+            System.out.println("uid = " + fileName.getUid());
+            return Result.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error();
+        }
+    }
+
+    /**
+     * 更新文件
+     *
+     * @param fileName
+     * @return
+     */
+    @ApiOperation(value = "更新文件", notes = "应用本体")
+    @PutMapping("/update")
+    public Result update(@RequestBody TFileInfo fileName) {
+        //更新文件信息并更新
+        boolean flag = tFileInfoService.updateById(fileName);
+
+        System.out.println("更新文件信息 = " + fileName);
+        //判断 flag为true 成功, 否则失败
+        if (flag) {
+            return Result.ok();
+        }
+        return Result.error();
+    }
+
+    /**
+     * 接收String[] 数组 单个和批量删除
+     *
+     * @param ids
+     * @return
+     */
+    @ApiOperation(value = "单个和批量删除", notes = "应用本体")
+    @DeleteMapping("/delete")
+    public Result delMany(@RequestBody String[] ids) {
+        try {
+            //删除多个文件
+            //调用自定义的多个删除方法
+            tFileInfoService.delMany(ids);
+            return Result.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error();
+        }
+    }
+
+    //    @GetMapping("/tree2")
 //    public Result findAllCategorys2() {
 //        // 1. 查找一级分类
 ////        List<TFileInfo> list1 = tFileInfoService.findCategoryByParentid0("supplier_id");
@@ -85,143 +197,4 @@ public class TFileInfoController {
 //        return result;
 //    }
 
-    /**
-     * 树状目录
-     *
-     * @return
-     */
-    @ApiOperation(value = "树状目录", notes = "应用本体")
-    @GetMapping("/treeAll")
-    public Result getChapterList() {
-        List<OneChapter> list = tFileInfoService.queryChapterAndVideoList();
-
-
-        System.out.println(CephPropertiesUtil.ADMIN);
-        System.out.println(CephPropertiesUtil.CEPH_IP);
-        System.out.println(CephPropertiesUtil.KEY);
-        Data data = new Data();
-        //返回数据信息
-        Result result = new Result();
-        data.setResults(list);
-        result.ok();
-        result.setData(data);
-        return result;
-    }
-
-    /**
-     * 多条件查询
-     *
-     * @param
-     * @return
-     */
-    @ApiOperation(value = "多条件查询", notes = "应用本体")
-    @PostMapping("/condition")
-    public Result queryAlarm(@RequestBody PageRequest pageRequest) {
-        Result result = tFileInfoService.queryAlarm(pageRequest);
-        return result;
-    }
-
-    /**
-     * 文件详情查询
-     *
-     * @param uid
-     * @return
-     */
-    @ApiOperation(value = "文件详情查询", notes = "应用本体")
-    @GetMapping("/detail/{id}")
-    public Result findAll(@PathVariable("id") String uid) {
-        try {
-            TFileInfo byId = tFileInfoService.getById(uid);
-            Data data = new Data();
-            //返回数据信息
-            Result result = new Result();
-            data.setResult(byId);
-            result.ok();
-            result.setData(data);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            //返回数据信息
-            Result result = new Result();
-            //失败,返回错误信息
-            result.error();
-            return result;
-        }
-    }
-
-    /**
-     * 文件创建,
-     *
-     * @param fileName
-     * @return
-     */
-    @ApiOperation(value = "文件创建", notes = "应用本体")
-    @PostMapping("/create")
-    public Result created(@RequestBody TFileInfo fileName, HttpServletRequest request) {
-        try {
-            //添加文件信息
-            fileName.setUid(UUID.randomUUID().toString().replaceAll("-", ""));
-            tFileInfoService.save(fileName);
-            String uid = fileName.getUid();
-            System.out.println(uid + "uid");
-
-            Result result = new Result();
-            result.ok();
-            return result;
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
-        }
-    }
-
-    /**
-     * 更新文件
-     *
-     * @param fileName
-     * @return
-     */
-    @ApiOperation(value = "更新文件", notes = "应用本体")
-    @PutMapping("/update")
-    public Result update(@RequestBody TFileInfo fileName) {
-        //更新文件信息并更新
-        boolean flag = tFileInfoService.updateById(fileName);
-
-        System.out.println("更新文件信息 = " + fileName);
-        //判断 flag为true 成功, 否则失败
-        if (flag) {
-            Result result = new Result();
-            result.ok();
-            return result;
-        }
-        Result result = new Result();
-        result.error();
-        return result;
-    }
-
-    /**
-     * 接收String[] 数组 单个和批量删除
-     *
-     * @param ids
-     * @return
-     */
-    @ApiOperation(value = "单个和批量删除", notes = "应用本体")
-    @DeleteMapping("/delete")
-    public Result delMany(@RequestBody String[] ids) {
-        try {
-            //删除多个文件
-            //调用自定义的多个删除方法
-            tFileInfoService.delMany(ids);
-            Result result = new Result();
-            result.ok();
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Result result = new Result();
-            result.error();
-            return result;
-        }
-    }
 }
