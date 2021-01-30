@@ -1,17 +1,17 @@
 package com;
 
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import tk.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author pengkun shan
+ */
 @SpringBootApplication
-@MapperScan("com.mapper")
 public class ManageApplication {
     public static void main(String[] args) {
         SpringApplication.run(ManageApplication.class, args);
-        System.out.println("供应商模块启动成功 ! ! !");
-        System.out.println("供应商模块启动成功 ! ! !");
-        System.out.println("供应商模块启动成功 ! ! !");
+        System.out.println("组织模块运行成功 !  !  !  !  !  ");
+        System.out.println("组织模块运行成功 !  !  !  !  !  ");
+        System.out.println("组织模块运行成功 !  !  !  !  !  ");
     }
 }

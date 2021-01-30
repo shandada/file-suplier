@@ -28,18 +28,49 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/com.ceph/rados -->
+
+
+        <!--      导入阿里JSONObject相关依赖 -->
         <dependency>
-            <groupId>com.ceph</groupId>
-            <artifactId>rados</artifactId>
-            <version>0.5.0</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.70</version>
         </dependency>
 
+        <!--      HttpClient别名：HttpComponents-->
         <dependency>
-            <groupId>com.ceph</groupId>
-            <artifactId>libcephfs</artifactId>
-            <version>0.80.5</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.10</version>
         </dependency>
+
+
+        <!-- CEPH amazonaws-sdk start-->
+        <!-- CEPH start-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <version>1.11.354</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.354</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <!-- CEPH  amazonaws-sdk end-->
+
+        <!--        连接ceph-->
 
 
         <!--          @Id   @GeneratedValue(generator = "JDBC")-->
@@ -49,6 +80,7 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+
         <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -59,15 +91,28 @@
         <!-- 引入Druid依赖，阿里巴巴所提供的数据源 -->
         <!--        swagger-ui -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.8.0</version>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.5.21</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.8.0</version>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+        <!--        swagger-ui -->
+
+
         <!--  import org.apache.commons.lang3.StringUtils-->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -75,6 +120,7 @@
             <version>3.10</version>
         </dependency>
 
+        <!--     lombok   -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -107,6 +153,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--        test-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -199,6 +246,12 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.5</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.minidev</groupId>-->
+<!--            <artifactId>json-smart</artifactId>-->
+<!--            <version>2.3</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
     </dependencies>
 
