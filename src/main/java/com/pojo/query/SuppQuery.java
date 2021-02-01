@@ -1,14 +1,7 @@
 package com.pojo.query;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 
 /**
@@ -18,6 +11,7 @@ import javax.persistence.Table;
  */
 @Data
 //封装对象
+@ApiModel(value = "供应商-封装对象", description = "")
 public class SuppQuery {
     /**
      * 供应商id

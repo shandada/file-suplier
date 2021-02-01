@@ -25,10 +25,10 @@ public class GlobalCorsConfig {
         //放行哪些原始域(请求方式)
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");
-        config.addAllowedMethod("GET");     //get
-        config.addAllowedMethod("PUT");     //put
-        config.addAllowedMethod("POST");    //post
-        config.addAllowedMethod("DELETE");  //delete
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
         config.addAllowedHeader("*");
 

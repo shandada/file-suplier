@@ -1,0 +1,33 @@
+{
+    "user_id": "root",
+    "display_name": "root",
+    "email": "",
+    "suspended": 0,
+    "max_buckets": 1000,
+    "auid": 0,
+    "subusers": [],
+    "keys": [
+        {
+            "user": "root",
+            "access_key": "3PJFMQE8EZSNBNTTFG3Z",
+            "secret_key": "pTPrnM248wWNPVxpYTgMA5mE2gNnGOv7M4LDZPOz"
+        }
+    ],
+    "swift_keys": [],
+    "caps": [],
+    "op_mask": "read, write, delete",
+    "default_placement": "",
+    "placement_tags": [],
+    "bucket_quota": {
+        "enabled": false,
+        "max_size_kb": -1,
+        "max_objects": -1
+    },
+    "user_quota": {
+        "enabled": false,
+        "max_size_kb": -1,
+        "max_objects": -1
+    },
+    "temp_url_keys": []
+}
+

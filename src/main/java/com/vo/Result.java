@@ -1,117 +1,83 @@
 package com.vo;
 
-import com.vo.ResultCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
+@ToString
 @ApiModel(value = "全局统一返回结果")
-
 public class Result {
     @ApiModelProperty(value = "返回码")
     private Integer code;
+    private String msg;
 
     @ApiModelProperty(value = "是否成功")
     private boolean success;
-//    @ApiModelProperty(value = "返回数据")
-//    private HashMap<String, Object> data = new HashMap<>();
 
     @ApiModelProperty(value = "返回数据")
-    private com.vo.Data data;
-
-    // 数据
-//    private String username;
-//    private String password;
-//    private String level;
-
+    private ResultData data;
+    @ApiModelProperty(value = "時間")
+    private Long timestamp = System.currentTimeMillis();
 
     //当前Result不对外公开构造,提供静态方法
 
     //私有化,不能new 只调用以下方法
     public Result() {
+
     }
 
-    ;
-
-    //调用成功方法
-//    public static Result ok() {
-//        Result r = new Result();//调用自己私有构造方法
-//        r.setSuccess(true);
-//        r.setCode(ResultCode.OK);
-//        return r;
-//    }
-    public void ok() {
-//        Result r = new Result();//调用自己私有构造方法
-        setSuccess(true);
-        setCode(ResultCode.OK);
+    //返回成功 攜帶數據
+    public static Result okDataes(ResultData data) {
+        Result r = new Result(); //调用自己私有构造方法
+        r.setCode(200);
+        r.setSuccess(true);
+        r.setMsg("成功");
+        r.setData(data);
+        r.setTimestamp(System.currentTimeMillis());
+        return r;
+    }
+    //返回成功 攜帶數據
+    public static Result okData(Object data) {
+        Result r = new Result(); //调用自己私有构造方法
+        r.setCode(200);
+        r.setSuccess(true);
+        r.setMsg("成功");
+        r.setData(ResultData.builder().result(data).build());
+        r.setTimestamp(System.currentTimeMillis());
+        return r;
     }
 
-    public void error() {
-        setSuccess(false);
-        setCode(ResultCode.ERROR);
+
+    //调用成功方法 不攜帶數據
+    public static Result ok() {
+        Result r = new Result();//调用自己私有构造方法
+        r.setSuccess(true);
+        r.setCode(200);
+        return r;
     }
 
     //失败调用方法
-//    public static Result error() {
-//        Result r = new Result();
-//        r.setSuccess(false);
-//        r.setCode(ResultCode.ERROR);
-//        return r;
-//    }
+    public static Result error() {
+        Result r = new Result();
+        r.setSuccess(false);
+        r.setCode(500);
+        return r;
+    }
 
-    //修改状态码
-    public Result code(Integer code) {
-        this.setCode(code);
+    //添加修改重复信息
+    public static Result exist() {
+        Result r = new Result();
+        r.setSuccess(false);
+        r.setCode(304);
+        return r;
+    }
+    //返回自定义message
+    public Result message(String message) {
+        this.setMsg(message);
         return this;
-    }
-
-    //data数据
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-
-
-
-
-    // 两个data方法名一样,参数不同,重载
-
-    //data数据
-//    public Result data(Object object) {
-//      return data(object);
-//
-//    }
-
-
-    @Override
-    public String toString() {
-        return "Result{" +
-                "code=" + code +
-                ", success=" + success +
-                ", data=" + data +
-
-                '}';
     }
 }
