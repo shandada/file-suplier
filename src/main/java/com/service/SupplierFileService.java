@@ -51,9 +51,10 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, Supplier> {
      * @return 文件实体对象  fileKey 上传到CEph的文件名
      */
     public void upload(String bucketName, String fileKey, MultipartFile file) throws IOException {
-        System.out.println("file:" + file + "--------" + "桶名: " + bucketName+"-----"+ "fileKey"+"--"+fileKey);
+        System.out.println("file:" + file + "--------" + "桶名: " + bucketName + "-----" + "fileKey" + "--" + fileKey);
         //连接CEph
-        CephUtils.connectCpeh(CephPropertiesUtil.ADMIN, CephPropertiesUtil.KEY, CephPropertiesUtil.CEPH_IP);
+        CephUtils.connectCpeh(CephPropertiesUtil.AACCESSKEY, CephPropertiesUtil.SECRETKEY, CephPropertiesUtil.CEPH_IP);
+        System.out.println("链接ceph: " + CephPropertiesUtil.AACCESSKEY + CephPropertiesUtil.SECRETKEY + CephPropertiesUtil.CEPH_IP);
         CephUtils.mulutiUpload(bucketName, fileKey, file);
     }
 
@@ -69,12 +70,15 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, Supplier> {
         FileSizeUtil sizeUtil = new FileSizeUtil();
         long size = file.getSize();
         String sizes = sizeUtil.getPrintSize(size);
+        System.out.println("sizes = " + sizes);
+
+
         //文件全名
         String filenameAll = file.getOriginalFilename();
         // gbk转utf-8，需要确定原编码格式，不知道的话就试一下
         byte[] s = filenameAll.getBytes("utf-8");
         String filename = new String(s, "UTF-8");
-        System.out.println("上传文件大小sizes===filename 文件名: " + filename+"-"+sizes);
+        System.out.println("上传文件大小sizes===filename 文件名: " + filename + "-" + sizes);
         //接受供应商gid 获取供应商信息
         Supplier supplier1 = baseMapper.selectById(gid);
         //获取供应商name
@@ -93,10 +97,9 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, Supplier> {
 
         FileInfo fileInfo = new FileInfo(
                 //文件id  //文件名   //版本号 供应商id 名称     描述       创建时间       更新时间    类型   大小  ceph_key    标签          //上传人    //历史版本      //状态                //逻辑删除,0 显示
-                uid, filename, version, gid, name, null, null, null, type, sizes, file_key, null, null, true, true, 0);
+                uid, filename, version, gid, name, null, null, null, type, sizes, file_key, null, name, true, true, 0);
         return fileInfo;
     }
-
 
     /**
      * 多个文件删除
@@ -147,7 +150,7 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, Supplier> {
     }
 
     /**
-     * 添加修改文件名查重
+     * 添加组织名查重
      *
      * @param name
      * @return
@@ -157,5 +160,27 @@ public class SupplierFileService extends ServiceImpl<SupplierMapper, Supplier> {
         queryWrapper.eq("name", name);
         List<Supplier> suppliers = baseMapper.selectList(queryWrapper);
         return suppliers.size() > 0 ? suppliers.get(0) : null;
+    }
+
+
+    /**
+     * 修改组织名查重
+     *
+     * @param name
+     * @return
+     */
+
+    public boolean EditName(String name) {
+        QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", name);
+        System.out.println("baseMapper = " + baseMapper.selectList(queryWrapper));
+        Supplier supplier = baseMapper.selectOne(queryWrapper);
+        if (name.equals(supplier.getName())) {
+            return true;
+        }
+        if (baseMapper.selectCount(queryWrapper) > 0) {
+            return false;
+        }
+        return true;
     }
 }

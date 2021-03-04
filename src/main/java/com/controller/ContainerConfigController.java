@@ -1,10 +1,11 @@
 package com.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.pagehelper.PageInfo;
 import com.pojo.ContainerConfig;
+import com.pojo.FileInfo;
 import com.pojo.query.GeneralJsonEntityQuery;
 import com.service.ContainerConfigService;
+import com.service.FileInfoService;
 import com.vo.PageRequest;
 import com.vo.Result;
 import com.vo.RetJson;
@@ -32,6 +33,11 @@ public class ContainerConfigController {
      */
     @Resource
     private ContainerConfigService configService;
+    /**
+     * 注入文件service
+     */
+    @Resource
+    private FileInfoService fileInfoService;
 
     /**
      * 分页+多条件查询
@@ -71,9 +77,6 @@ public class ContainerConfigController {
     }
 
 
-
-
-
     @ApiOperation(value = "分页列表", response = ContainerConfig.class)
     @PostMapping(value = "/page")
     public Object list(@RequestBody GeneralJsonEntityQuery jsonbody) throws JsonProcessingException {
@@ -94,6 +97,17 @@ public class ContainerConfigController {
     @ApiOperation(value = "新增")
     @PostMapping(value = "/add")
     public Object add(@RequestBody ContainerConfig param) {
+        /**
+         * 根据文件id 获取供应id,名称 添加到算法库
+         */
+
+        String fileId = param.getFileId();
+        FileInfo byId = fileInfoService.getById(fileId);
+        String supplierId = byId.getSupplierId();
+        String supplierName = byId.getSupplierName();
+
+        param.setSupplierId(supplierId);
+        param.setSupplierName(supplierName);
 
         configService.add(param);
         return RetJson.ok();
@@ -132,7 +146,7 @@ public class ContainerConfigController {
 
     @ApiOperation(value = "根据站点查询所属镜像")
     @GetMapping("/queryBystationId")
-    public Object findContainsersByStationId(@RequestParam("stationId")@ApiParam(value = "站点id",required = true) String stationId, @ApiParam("当前页数")@RequestParam("current")Integer current, @ApiParam("每页数据条数")@RequestParam("pageSize")Integer pageSize){
+    public Object findContainsersByStationId(@RequestParam("stationId") @ApiParam(value = "站点id", required = true) String stationId, @ApiParam("当前页数") @RequestParam("current") Integer current, @ApiParam("每页数据条数") @RequestParam("pageSize") Integer pageSize) {
         return configService.findContainsersByStationId(stationId, current, pageSize);
     }
 }

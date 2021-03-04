@@ -25,6 +25,7 @@ public class SuppQuery {
 
     //客户名称
     private String customName;
+
     //客户手机号
     private String customPhone;
     /**

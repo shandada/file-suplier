@@ -57,6 +57,7 @@ public class Result {
         Result r = new Result();//调用自己私有构造方法
         r.setSuccess(true);
         r.setCode(200);
+        r.setTimestamp(System.currentTimeMillis());
         return r;
     }
 
@@ -65,6 +66,7 @@ public class Result {
         Result r = new Result();
         r.setSuccess(false);
         r.setCode(500);
+        r.setTimestamp(System.currentTimeMillis());
         return r;
     }
 
@@ -78,6 +80,10 @@ public class Result {
     //返回自定义message
     public Result message(String message) {
         this.setMsg(message);
+        return this;
+    }
+    public Result code(Integer code) {
+        this.setCode(code);
         return this;
     }
 }

@@ -10,11 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
 /**
  * @author pengkun Shan
- * @Description:
+ * @Description:  树状目录
  * @date 2021/1/30 13:55
  */
 @Data
@@ -37,9 +35,9 @@ public class Location {
      */
     private String fatherId;
     /**
-     * 类型station  就是stationid
+     * 类型station  entityId
      */
-    private String stationId;
+    private String entityId;
 
     @TableField(exist = false)
     private TAlarm tAlarm;

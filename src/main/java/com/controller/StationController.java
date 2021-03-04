@@ -2,14 +2,11 @@ package com.controller;
 
 import com.excepetion.ServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.pagehelper.PageInfo;
 import com.pojo.Location;
 import com.pojo.Station;
+import com.pojo.query.GeneralJsonEntityQuery;
 import com.service.LocationService;
 import com.service.StationServiceImpl;
-import com.vo.GeneralJsonEntityQuery;
-import com.vo.Result;
-import com.vo.ResultData;
 import com.vo.RetJson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -86,18 +82,17 @@ public class StationController {
         return RetJson.ok();
     }
 
-
     @ApiOperation(value = "根据镜像查询站点信息")
     @GetMapping(value = "queryByContainerId")
-    public Object queryByContainerId(@RequestParam("imageName")@ApiParam(value = "镜像name",required = true) String imageName,@RequestParam("imageTag")@ApiParam(value = "版本号") String imageTag,@ApiParam("当前页数") @RequestParam("current")Integer current, @RequestParam("pageSize")@ApiParam("每页数据条数") Integer pageSize){
-        return stationService.queryByContainerId(imageName,imageTag, current, pageSize);
+    public Object queryByContainerId(@RequestParam("imageName") @ApiParam(value = "镜像name", required = true) String imageName, @RequestParam("imageTag") @ApiParam(value = "版本号") String imageTag, @ApiParam("当前页数") @RequestParam("current") Integer current, @RequestParam("pageSize") @ApiParam("每页数据条数") Integer pageSize) {
+        return stationService.queryByContainerId(imageName, imageTag, current, pageSize);
     }
 
 
     @ApiOperation(value = "站点目录")
     @GetMapping("/tree")
     public Object tree() {
-        List<Location> list = locationService.findAll();
+        List<Location> list = locationService.list(null);
         System.out.println("站点目录 = " + "tree");
         return RetJson.ok(list);
     }

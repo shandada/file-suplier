@@ -16,7 +16,7 @@ import javax.servlet.MultipartConfigElement;
 
 /**
  * Create on 2020/10/21 9:30
- *
+ * http://localhost:8089/aip/v1/doc.html
  * @author Yang Shuolin
  */
 @Configuration
@@ -45,7 +45,7 @@ public class ApplicationConfiguration {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         // 限制上传文件大小
-        factory.setMaxFileSize(DataSize.ofGigabytes(30));
+        factory.setMaxFileSize(DataSize.ofGigabytes(50));
         return factory.createMultipartConfig();
     }
 }

@@ -41,13 +41,16 @@ public class Supplier implements Serializable {
     @ApiModelProperty(value = "供应商名称")
     private String name;
 
-    @ApiModelProperty(value = "客户名称")
+//    @ApiModelProperty(value = "用户id")
+//    private String customId;
+
+    @ApiModelProperty(value = "用户名称")
     private String customName;
 
-    @ApiModelProperty(value = "客户手机号")
+    @ApiModelProperty(value = "用户手机号")
     private String customPhone;
 
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value = "用户邮箱")
     private String customEmail;
 
     @ApiModelProperty(value = "状态，1在状态，0不在")

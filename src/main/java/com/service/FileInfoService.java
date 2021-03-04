@@ -6,12 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ceph.CephUtils;
 import com.excepetion.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mapper.ContainerConfigMapper;
 import com.mapper.FileInfoMapper;
-import com.pojo.ContainerConfig;
 import com.pojo.FileInfo;
 import com.pojo.query.GeneralJsonEntityQuery;
 import com.pojo.query.GeneralJsonQueryWrapperBuilder;
@@ -39,9 +38,12 @@ import java.util.Map;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class FileInfoService extends ServiceImpl<FileInfoMapper, FileInfo> implements IService<FileInfo> {
-
     @Resource
     private FileInfoMapper fileInfoMapper;
+    @Resource
+    private ContainerConfigMapper containerConfigMapper;
+    @Resource
+    private ContainerConfigService containerConfigService;
 
     /**
      * 目录树状
@@ -150,29 +152,25 @@ public class FileInfoService extends ServiceImpl<FileInfoMapper, FileInfo> imple
      * 文件下载
      *
      * @param
-     * @param uid
+     * @param
      * @return
      * @throws IOException
      */
-    public void download(String uid, HttpServletResponse response) throws IOException {
-        System.out.println("下载文件的id = " + uid);
-        String bucketName = "nanjing";
-        FileInfo fileInfo = baseMapper.selectById(uid);
-        String fileKey = fileInfo.getFileKey();
-        String fileName = fileInfo.getFileName();
-        System.out.println("下载文件信息: bucketName == uid == fileKey " + bucketName + "==" + uid + "===" + fileKey);
-        CephUtils.connectCpeh(CephPropertiesUtil.ADMIN, CephPropertiesUtil.KEY, CephPropertiesUtil.CEPH_IP);
-        InputStream inputStream = CephUtils.readStreamObject(bucketName, fileKey);
+    public void download(String fileName, String fileKey, HttpServletResponse response, InputStream inputStream) throws IOException {
+
+        System.out.println("下载文件信息: bucketName ==fileKey " + CephPropertiesUtil.BucketName  + "===" + fileKey);
         String hehe = new String(fileName.getBytes("utf-8"), "iso-8859-1");
         response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
         System.out.println("CEph流: inputStream = 文件下载中... " + inputStream);
         byte[] b = new byte[1024];
         int len;
-        while ((len = inputStream.read(b)) > 0) {
+        while ((len = inputStream.read(b)) != -1) {
             response.getOutputStream().write(b, 0, len);
+            response.getOutputStream().flush();
         }
+        response.getOutputStream().close();
         inputStream.close();
-        System.out.println("文件下载成功---  文件名:" + fileName);
+        System.out.println("文件下载成功===文件名: " + fileName);
     }
 
     /**
@@ -197,6 +195,16 @@ public class FileInfoService extends ServiceImpl<FileInfoMapper, FileInfo> imple
         queryWrapper.eq("file_name", fileName1);
         List<FileInfo> fileInfos = baseMapper.selectList(queryWrapper);
         return fileInfos.size() > 0 ? fileInfos.get(0) : null;
+    }
+
+    public boolean ADDName(String fileName) {
+        QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("file_name", fileName);
+        // >0 存在文件名 返回false
+        if (baseMapper.selectCount(queryWrapper) > 0) {
+            return false;
+        }
+        return true;
     }
 }
 

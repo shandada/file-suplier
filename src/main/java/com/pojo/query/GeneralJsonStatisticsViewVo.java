@@ -1,4 +1,4 @@
-package com.vo;
+package com.pojo.query;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

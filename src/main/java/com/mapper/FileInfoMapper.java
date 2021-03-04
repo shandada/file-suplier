@@ -29,5 +29,4 @@ public interface FileInfoMapper extends BaseMapper<FileInfo> {
             @Result(column = "isDelete", property = "is_delete"),
     })
     public List<FileInfo> supplierId(@Param("gid") String gid);
-
 }

@@ -1,6 +1,6 @@
 {
-    "user_id": "root",
-    "display_name": "root",
+    "user_id": "testuser",
+    "display_name": "testuser",
     "email": "",
     "suspended": 0,
     "max_buckets": 1000,
@@ -8,9 +8,9 @@
     "subusers": [],
     "keys": [
         {
-            "user": "root",
-            "access_key": "3PJFMQE8EZSNBNTTFG3Z",
-            "secret_key": "pTPrnM248wWNPVxpYTgMA5mE2gNnGOv7M4LDZPOz"
+            "user": "testuser",
+            "access_key": "75FP188E40PGB88UU12D",
+            "secret_key": "IryhO8VZDUBkvVkmG8qgcPgG6sOYUs1sRAdFRjgc"
         }
     ],
     "swift_keys": [],
@@ -30,4 +30,3 @@
     },
     "temp_url_keys": []
 }
-

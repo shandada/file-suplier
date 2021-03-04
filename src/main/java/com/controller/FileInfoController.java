@@ -2,11 +2,12 @@ package com.controller;
 
 import com.excepetion.ServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pojo.ContainerConfig;
 import com.pojo.FileInfo;
 import com.pojo.query.GeneralJsonEntityQuery;
 import com.pojo.query.GeneralJsonStatisticsViewQuery;
 import com.pojo.query.GeneralJsonStatisticsViewQueryProcessor;
+import com.pojo.query.GeneralJsonStatisticsViewVo;
+import com.service.ContainerConfigService;
 import com.service.FileInfoService;
 import com.service.SupplierFileService;
 import com.vo.*;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Administrator
@@ -43,6 +43,11 @@ public class FileInfoController {
     @Resource
     private FileInfoService fileInfoService;
 
+    /**
+     * 注入算法库service
+     */
+    @Resource
+    private ContainerConfigService containerConfigService;
 
     /**
      * 文件实体统计接口设计
@@ -114,9 +119,8 @@ public class FileInfoController {
             /**
              * 随机生成uuid
              */
-            fileName.setStatus(false);
-            fileName.setUid(UUID.randomUUID().toString().replaceAll("-", ""));
             fileInfoService.save(fileName);
+            System.out.println("create 创建文件 = " + fileName.getUid());
             return Result.ok();
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,17 +137,7 @@ public class FileInfoController {
     @ApiOperation(value = "更新文件", notes = "应用本体")
     @PutMapping("/update")
     public Result update(@RequestBody FileInfo fileName) {
-        String fileName1 = fileName.getFileName();
         try {
-//            FileInfo fileInfo = fileInfoService.ReuseName(fileName1);
-//            System.out.println("tFileInfos2 = " + fileInfo);
-//            //修改的文件名不能重复
-//            if (fileInfo == null) {
-//                fileInfoService.updateById(fileName);
-//                return Result.ok();
-//            }
-//            return Result.exist().message("文件名已经存在");
-
             fileInfoService.updateById(fileName);
             return Result.ok();
         } catch (Exception e) {
@@ -161,13 +155,19 @@ public class FileInfoController {
     @ApiOperation(value = "单个和批量删除", notes = "应用本体")
     @DeleteMapping("/delete")
     public Result delMany(@ApiParam(value = "传递一个数组,可放多个id", required = true) @RequestBody String[] ids) {
-        try {
+        for (String id : ids) {
+            /**
+             * 判断算法库中是否有文件id  如果存在 删除失败, 不存在 删除成功!
+             */
+            boolean flag = containerConfigService.selectFileId(id);
+            if (!flag) {
+                return Result.exist().message("算法库已绑定该数据,删除失败!");
+            }
             fileInfoService.delMany(ids);
-            return Result.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error();
+            return Result.ok().message("删除成功");
         }
+        return null;
+
     }
 
     /**
@@ -175,13 +175,13 @@ public class FileInfoController {
      *
      * @return
      */
-    @ApiOperation(value = "树状目录", notes = "应用本体")
-    @GetMapping("/treeAll")
-    public Result getChapterList() {
-        List<OneChapter> list = fileInfoService.queryChapterAndVideoList();
-        System.out.println("123 = " + list);
-        ResultData resultData = new ResultData();
-        resultData.setResults(list);
-        return Result.okData(resultData);
-    }
+//    @ApiOperation(value = "树状目录", notes = "应用本体")
+//    @GetMapping("/treeAll")
+//    public Result getChapterList() {
+//        List<OneChapter> list = fileInfoService.queryChapterAndVideoList();
+//        System.out.println("123 = " + list);
+//        ResultData resultData = new ResultData();
+//        resultData.setResults(list);
+//        return Result.okData(resultData);
+//    }
 }

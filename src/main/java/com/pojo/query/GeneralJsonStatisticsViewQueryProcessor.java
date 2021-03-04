@@ -3,7 +3,6 @@ package com.pojo.query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.excepetion.ServiceException;
-import com.vo.GeneralJsonStatisticsViewVo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;

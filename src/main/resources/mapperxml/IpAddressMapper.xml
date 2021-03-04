@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.IpAddressMapper">
+  <resultMap id="BaseResultMap" type="com.pojo.IpAddress">
+    <!--@mbg.generated-->
+    <!--@Table ip_address-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="ai_address" jdbcType="VARCHAR" property="aiAddress" />
+    <result column="ceph_address" jdbcType="VARCHAR" property="cephAddress" />
+    <result column="modular" jdbcType="VARCHAR" property="modular" />
+    <result column="ceph_access_key" jdbcType="VARCHAR" property="cephAccessKey" />
+    <result column="ceph_secret_key" jdbcType="VARCHAR" property="cephSecretKey" />
+    <result column="bucket_name" jdbcType="VARCHAR" property="bucketName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, ai_address, ceph_address, modular, ceph_access_key, ceph_secret_key, bucket_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from ip_address
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from ip_address
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.IpAddress">
+    <!--@mbg.generated-->
+    insert into ip_address (id, ai_address, ceph_address, 
+      modular, ceph_access_key, ceph_secret_key, 
+      bucket_name)
+    values (#{id,jdbcType=VARCHAR}, #{aiAddress,jdbcType=VARCHAR}, #{cephAddress,jdbcType=VARCHAR}, 
+      #{modular,jdbcType=VARCHAR}, #{cephAccessKey,jdbcType=VARCHAR}, #{cephSecretKey,jdbcType=VARCHAR}, 
+      #{bucketName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.IpAddress">
+    <!--@mbg.generated-->
+    insert into ip_address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="aiAddress != null">
+        ai_address,
+      </if>
+      <if test="cephAddress != null">
+        ceph_address,
+      </if>
+      <if test="modular != null">
+        modular,
+      </if>
+      <if test="cephAccessKey != null">
+        ceph_access_key,
+      </if>
+      <if test="cephSecretKey != null">
+        ceph_secret_key,
+      </if>
+      <if test="bucketName != null">
+        bucket_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="aiAddress != null">
+        #{aiAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="cephAddress != null">
+        #{cephAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="modular != null">
+        #{modular,jdbcType=VARCHAR},
+      </if>
+      <if test="cephAccessKey != null">
+        #{cephAccessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cephSecretKey != null">
+        #{cephSecretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketName != null">
+        #{bucketName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.IpAddress">
+    <!--@mbg.generated-->
+    update ip_address
+    <set>
+      <if test="aiAddress != null">
+        ai_address = #{aiAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="cephAddress != null">
+        ceph_address = #{cephAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="modular != null">
+        modular = #{modular,jdbcType=VARCHAR},
+      </if>
+      <if test="cephAccessKey != null">
+        ceph_access_key = #{cephAccessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cephSecretKey != null">
+        ceph_secret_key = #{cephSecretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketName != null">
+        bucket_name = #{bucketName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pojo.IpAddress">
+    <!--@mbg.generated-->
+    update ip_address
+    set ai_address = #{aiAddress,jdbcType=VARCHAR},
+      ceph_address = #{cephAddress,jdbcType=VARCHAR},
+      modular = #{modular,jdbcType=VARCHAR},
+      ceph_access_key = #{cephAccessKey,jdbcType=VARCHAR},
+      ceph_secret_key = #{cephSecretKey,jdbcType=VARCHAR},
+      bucket_name = #{bucketName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

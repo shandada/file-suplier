@@ -16,24 +16,29 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CephPropertiesUtil implements InitializingBean {
-    @Value("${ceph.file.admin}")
 
-    private String admin;
-    @Value("${ceph.file.key}")
-    private String key;
+    @Value("${ceph.file.accessKey}")
+    private String accessKey;
+
+    @Value("${ceph.file.secretKey}")
+    private String secretKey;
 
     @Value("${ceph.file.ip}")
     private String ip;
 
+    @Value("${ceph.file.bucketName}")
+    private String bucketName;
 
-    public static String ADMIN;
-    public static String KEY;
+    public static String AACCESSKEY;
+    public static String SECRETKEY;
     public static String CEPH_IP;
+    public static String BucketName;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ADMIN = admin;
-        KEY = key;
+        AACCESSKEY = accessKey;
+        SECRETKEY = secretKey;
         CEPH_IP = ip;
+        BucketName = bucketName;
     }
 }

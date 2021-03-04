@@ -13,9 +13,8 @@ import com.mapper.ContainerStationMapper;
 import com.mapper.StationMapper;
 import com.pojo.ContainerStationView;
 import com.pojo.Station;
-import com.pojo.query.TAlarm;
-import com.vo.GeneralJsonEntityQuery;
-import com.vo.GeneralJsonQueryWrapperBuilder;
+import com.pojo.query.GeneralJsonEntityQuery;
+import com.pojo.query.GeneralJsonQueryWrapperBuilder;
 import com.vo.RetJson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,7 +60,6 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> {
 
         return map;
     }
-
 
     /**
      * 详情
@@ -128,24 +126,18 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> {
      */
 
     public Object queryByContainerId(String imageName, String imageTag, Integer current, Integer pageSize) {
-//    ContainerConfig containerConfig = containerConfigMapper.selectById(containerId);
         PageHelper.startPage(current, pageSize);
         QueryWrapper<ContainerStationView> wrapper = new QueryWrapper<>();
         wrapper.eq("imageName", imageName);
         wrapper.eq("imageTag", imageTag);
         List<ContainerStationView> stationByContainerId = conStaViewMapper.selectList(wrapper);
-//    List<Station> stationByContainerId = containerStationMapper.findStationByContainerId(containerId);
         PageInfo<ContainerStationView> pageInfo = new PageInfo<ContainerStationView>(stationByContainerId);
         Integer total = new Integer((int) pageInfo.getTotal());
-//    containerConfig.setStationList(stationByContainerId);
         return RetJson.ok(stationByContainerId, total, current);
     }
-
 
     public Station findStationId(String stationId) {
         Station station = baseMapper.selectById(stationId);
         return station;
     }
-
-
 }

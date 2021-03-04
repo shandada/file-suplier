@@ -56,6 +56,7 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
             //关联查询文件库
             for (ContainerConfig thiConfig : selectList) {
                 FileInfo fileInfo = fileInfoService.findID(thiConfig.getFileId());
+                System.out.println("fileInfo = " + fileInfo);
                 if (fileInfo != null) {
                     thiConfig.setFileInfo(fileInfo);
                 } else {
@@ -65,7 +66,6 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
             //封装返回对象
             PageInfo<ContainerConfig> pageInfo = new PageInfo<>(selectList);
             ResultData containerConfigData = new ResultData(null, selectList, pageInfo.getTotal(), pageInfo.getPageNum());
-            //返回response
             return Result.okDataes(containerConfigData);
         } catch (ServiceException e) {
             e.printStackTrace();
@@ -92,8 +92,13 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
     private ContainerStationMapper containerStationMapper;
 
 
+    /**
+     * 分页
+     *
+     * @param query
+     * @return
+     */
     public Map<String, Object> page(GeneralJsonEntityQuery query) {
-
         QueryWrapper<ContainerConfig> queryWrapper = new QueryWrapper<>();
         Page<ContainerConfig> page = new Page<>(query.getCurrent(), query.getPageSize());
         queryWrapper.orderByAsc("CreateTime");
@@ -161,18 +166,19 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
      */
 
     public boolean removes(List<String> ids) {
+
         return removeByIds(ids);
     }
 
     /**
      * 根据变电站查询 镜像s
-     *
      * @param stationId
      * @param current
      * @param pageSize
      * @return
      */
     public Object findContainsersByStationId(String stationId, Integer current, Integer pageSize) {
+        PageHelper.startPage(current, pageSize);
         PageHelper.startPage(current, pageSize);
         List<ContainerConfig> containsers = containerStationMapper.findContainsersByStationId(stationId);
         List<ContainerStation> containerStations = containerStationMapper.findByStationId(stationId);
@@ -193,6 +199,7 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
 
     /**
      * 删除后 主线设置
+     *
      * @param ids
      */
     public void IdsMaster(List<String> ids) {
@@ -208,4 +215,22 @@ public class ContainerConfigService extends ServiceImpl<ContainerConfigMapper, C
         baseMapper.updateById(containerConfig1);
         System.out.println("containerConfig1 = " + containerConfig1);
     }
+
+//    public List<ContainerConfig> selectFileId(String id) {
+//        QueryWrapper<ContainerConfig> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("fileId",id);
+//        return baseMapper.selectList(queryWrapper);
+//    }
+
+    public boolean selectFileId(String id) {
+        QueryWrapper<ContainerConfig> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fileId",id);
+        System.out.println("integer = " + baseMapper.selectCount(queryWrapper));
+        if (baseMapper.selectCount(queryWrapper)>0){
+            return false;
+        }
+        return true;
+    }
+
 }
+

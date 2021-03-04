@@ -16,6 +16,7 @@ public class ContainerStationView {
     @TableField(value = "detailedAddress")
     private String detailedAddress;
     @TableField(value = "stationIp")
+
     //ip 站点状态 通信状态 备注
     private String stationIp;
     //状态

@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -138,12 +137,5 @@ public class Station extends Model<Station> {
     @TableField(exist = false)
     private List<ContainerConfig> containerConfigs;
 
-    @Override
-    protected Serializable pkVal() {
-        return this.uid;
-    }
 
-//    //不对应数据库字段
-//    @TableField(exist = false)
-//    private List<Station> children;
 }
